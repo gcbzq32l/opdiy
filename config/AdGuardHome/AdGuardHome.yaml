@@ -33,11 +33,6 @@ dns:
   - tls://dns.quad9.net
   - https://dns.cloudflare.com/dns-query
   - tls://1.0.0.1
-  bootstrap_dns:
-  - 9.9.9.10
-  - 149.112.112.10
-  all_servers: false
-  fastest_addr: true
   - '[/0-100.com/]https://dns.alidns.com/dns-query'
   - '[/0-6.com/]https://dns.alidns.com/dns-query'
   - '[/0-gold.net/]https://dns.alidns.com/dns-query'
@@ -75810,6 +75805,11 @@ dns:
   - '[/zzzzhong.com/]https://dns.alidns.com/dns-query'
   - '[/zzzzllee.com/]https://dns.alidns.com/dns-query'
   - '[/zzzzmall.com/]https://dns.alidns.com/dns-query'
+  bootstrap_dns:
+  - 9.9.9.10
+  - 149.112.112.10
+  all_servers: false
+  fastest_addr: true
   allowed_clients: []
   disallowed_clients: []
   blocked_hosts: []
