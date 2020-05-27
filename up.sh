@@ -24,7 +24,7 @@ wget -q https://github.com/felixonmars/dnsmasq-china-list/raw/master/accelerated
 sed -e 's|^server=/\(.*\)/114.114.114.114$$|\1|' accelerated-domains.china.conf | egrep -v '^#' > accelerated-domains.china.raw.txt && \
 sed -i "s/server=/  - '[/g;s/114.114.114.114/]https:\/\/dns.alidns.com\/dns-query'/g" accelerated-domains.china.raw.txt && \
 sed -i '/dns.alidns.com\/dns-query/d' config/AdGuardHome/AdGuardHome.yaml && \
-sed -i '40r accelerated-domains.china.raw.txt' config/AdGuardHome/AdGuardHome.yaml && \
+sed -i '35r accelerated-domains.china.raw.txt' config/AdGuardHome/AdGuardHome.yaml && \
 rm -rf accelerated* && echo "AdGuardHome.yaml更新成功" || echo "AdGuardHome.yaml暂无更新"
 echo "======================="
 git add . && git commit -m "$(date "+%Y%m%d-%H%M")" && git push && echo "更新完毕!!!" || echo "暂无更新!!!"
