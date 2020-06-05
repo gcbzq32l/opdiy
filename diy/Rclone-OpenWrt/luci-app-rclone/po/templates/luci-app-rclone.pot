@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: luasrc/model/cbi/rclone.lua:120
+#: luasrc/model/cbi/rclone.lua:118
 msgid "FAQ"
 msgstr ""
 
@@ -23,15 +23,11 @@ msgid ""
 "usr/bin and directories to and from different cloud storage providers."
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:45
-msgid "RcloneNg"
-msgstr ""
-
-#: luasrc/model/cbi/rclone.lua:77
+#: luasrc/model/cbi/rclone.lua:75
 msgid "Recommand: run"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:129
+#: luasrc/model/cbi/rclone.lua:127
 msgid ""
 "The content of the variable is protocol://server:port. The protocol value is "
 "commonly either http or socks5."
@@ -41,63 +37,63 @@ msgstr ""
 msgid "Webui React"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:63
+#: luasrc/model/cbi/rclone.lua:61
 msgid "all address"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:56
+#: luasrc/model/cbi/rclone.lua:54
 msgid "configure"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:82
+#: luasrc/model/cbi/rclone.lua:80
 msgid "download"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:81
+#: luasrc/model/cbi/rclone.lua:79
 msgid "download configuration"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:122
+#: luasrc/model/cbi/rclone.lua:120
 msgid "enable proxy"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:49
+#: luasrc/model/cbi/rclone.lua:47
 msgid "global"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:60
+#: luasrc/model/cbi/rclone.lua:58
 msgid "listen address"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:67
+#: luasrc/model/cbi/rclone.lua:65
 msgid "listen port"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:62
+#: luasrc/model/cbi/rclone.lua:60
 msgid "local network address"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:61
+#: luasrc/model/cbi/rclone.lua:59
 msgid "localhost address"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:131
+#: luasrc/model/cbi/rclone.lua:129
 msgid "log"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:110
+#: luasrc/model/cbi/rclone.lua:108
 msgid "password"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:135
+#: luasrc/model/cbi/rclone.lua:133
 msgid "path"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:116
+#: luasrc/model/cbi/rclone.lua:114
 msgid "proxy"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:125
+#: luasrc/model/cbi/rclone.lua:123
 msgid "proxy address"
 msgstr ""
 
@@ -105,7 +101,7 @@ msgstr ""
 msgid "rclone address"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:73
+#: luasrc/model/cbi/rclone.lua:71
 msgid "rclone configuration file path"
 msgstr ""
 
@@ -121,18 +117,18 @@ msgstr ""
 msgid "rclone state"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:53
+#: luasrc/model/cbi/rclone.lua:51
 msgid "run Rclone as daemon"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:79
+#: luasrc/model/cbi/rclone.lua:77
 msgid "than updaload configuration to here."
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:79
+#: luasrc/model/cbi/rclone.lua:77
 msgid "to setup configuration on pc,"
 msgstr ""
 
-#: luasrc/model/cbi/rclone.lua:105
+#: luasrc/model/cbi/rclone.lua:103
 msgid "username"
 msgstr ""
