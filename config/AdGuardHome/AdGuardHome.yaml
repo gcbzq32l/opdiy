@@ -22,7 +22,7 @@ dns:
   blocking_mode: null_ip
   blocking_ipv4: ""
   blocking_ipv6: ""
-  blocked_response_ttl: 10
+  blocked_response_ttl: 3600
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   ratelimit: 0
@@ -30,9 +30,7 @@ dns:
   refuse_any: true
   upstream_dns:
   - https://dns.quad9.net/dns-query
-  - tls://dns.quad9.net
   - https://dns.cloudflare.com/dns-query
-  - tls://1.0.0.1
   - '[/0-100.com/]https://dns.alidns.com/dns-query'
   - '[/0-6.com/]https://dns.alidns.com/dns-query'
   - '[/0-gold.net/]https://dns.alidns.com/dns-query'
@@ -75121,7 +75119,7 @@ dns:
   disallowed_clients: []
   blocked_hosts: []
   cache_size: 4194304
-  cache_ttl_min: 3600
+  cache_ttl_min: 18000
   cache_ttl_max: 86000
   bogus_nxdomain: []
   aaaa_disabled: true
@@ -75155,8 +75153,10 @@ dns:
     answer: 149.112.112.10
   - domain: '*.apple.cn'
     answer: '*.apple.com'
-  - domain: www.google.cn
-    answer: www.google.com
+  - domain: '*.google.cn'
+    answer: '*.google.com'
+  - domain: '*.googleapis.cn'
+    answer: '*.googleapis.com'
   - domain: '*.g.cn'
     answer: www.google.com
   - domain: www.google.com.hk
@@ -75184,41 +75184,37 @@ filters:
   name: AdAway
   id: 2
 - enabled: true
-  url: https://hosts-file.net/ad_servers.txt
-  name: hpHosts - Ad and Tracking servers only
-  id: 3
-- enabled: true
   url: http://www.malwaredomainlist.com/hostslist/hosts.txt
   name: MalwareDomainList.com Hosts List
-  id: 4
+  id: 3
 - enabled: true
   url: https://easylist-downloads.adblockplus.org/antiadblockfilters.txt
   name: Adblock Warning Removal List
-  id: 1553073383
+  id: 4
 - enabled: true
   url: https://fanboy.co.nz/fanboy-problematic-sites.txt
   name: Fanboy's problematic-sites
-  id: 1553073384
+  id: 5
 - enabled: true
   url: https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/ABP-FX.txt
   name: ABP-FX
-  id: 1553073385
+  id: 6
 - enabled: true
   url: https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt
   name: lazy.txt
-  id: 1553073386
+  id: 7
 - enabled: true
   url: https://raw.githubusercontent.com/vokins/yhosts/master/hosts
   name: yhosts
-  id: 1553073388
+  id: 8
 - enabled: true
   url: http://sub.adtchrome.com/adt-chinalist-easylist.txt
   name: ChinaList+EasyList(修正)
-  id: 1553073405
+  id: 9
 - enabled: false
   url: https://raw.githubusercontent.com/missdeer/blocklist/master/toblock-without-shorturl.lst
   name: toblock-without-shorturl
-  id: 1583870454
+  id: 10
 whitelist_filters: []
 user_rules:
 - ""
