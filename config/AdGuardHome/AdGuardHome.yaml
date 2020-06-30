@@ -22,7 +22,7 @@ dns:
   blocking_mode: null_ip
   blocking_ipv4: ""
   blocking_ipv6: ""
-  blocked_response_ttl: 3600
+  blocked_response_ttl: 18000
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   ratelimit: 0
