@@ -26,6 +26,8 @@ sed -i "s/server=/  - '[/g;s/114.114.114.114/]https:\/\/dns.alidns.com\/dns-quer
 sed -i '/dns.alidns.com\/dns-query/d' config/AdGuardHome/AdGuardHome.yaml && \
 sed -i '33r accelerated-domains.china.raw.txt' config/AdGuardHome/AdGuardHome.yaml && \
 rm -rf accelerated* && echo "AdGuardHome.yaml更新成功" || echo "AdGuardHome.yaml暂无更新"
+#baiduwp
+wget -q https://github.com/TkzcM/baiduwp/raw/master/index.js && rm -rf tools/baiduwp/index.js && mv index.js tools/baiduwp/ && echo "baiduwp更新成功" || echo "baiduwp暂无更新"
 echo "======================="
 git add . && git commit -m "$(date "+%Y%m%d-%H%M")" && git push && echo "更新完毕!!!" || echo "暂无更新!!!"
 echo "======================="
