@@ -149,6 +149,19 @@ const filebody = `<!DOCTYPE html>
     }
     return "";
   }
+  function goToDir(surl, pwd, randsk, dir) {
+    var $form = $('<form>').attr('method', 'POST');
+    var appendFormItem = function(key, value) {
+      $form.append($('<input>').attr('type', 'hidden').attr('name', key).attr('value', value));
+    };
+
+    appendFormItem('surl', surl);
+    appendFormItem('pwd', pwd);
+    appendFormItem('randsk', randsk);
+    appendFormItem('dir', dir);
+
+    $form.appendTo($('body')).submit();
+  }
   $(document).ready(function(){
     $(".fa-file").each(function(){
       var icon = getIconClass($(this).next().text());
@@ -207,6 +220,8 @@ const generate = async request => {
   const text = await request.formData()
   const surl = text.get('surl')
   const pwd = text.get('pwd')
+  const dir = text.get('dir')
+  let randsk = text.get('randsk')
   const headers = { 'Content-Type': 'text/html;charset=UTF-8' }
   const surl_1 = surl.substring(1)
   async function verifyPwd(surl,pwd){
@@ -255,10 +270,10 @@ const generate = async request => {
       return 1
     }
   }
-  async function getFileList(shareid,uk,randsk){
+  async function getFileList(shareid,uk,randsk,dir){
     const res2 = await fetch('https://pan.baidu.com/share/list?app_id=250528&channel='
-    + 'chunlei&clienttype=0&desc=0&num=100&order=name&page=1&root=1&shareid=' + shareid + '&showempty=0&uk='
-    + uk + '&web=1',{
+    + 'chunlei&clienttype=0&desc=0&num=100&order=name&page=1&root=' + (+!dir) + '&shareid=' + shareid + '&showempty=0&uk='
+    + uk + (dir ? '&dir=' + encodeURIComponent(dir) : '') + '&web=1',{
       method:'GET',
       headers:{
         'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.514.1919.810 Safari/537.36',
@@ -269,7 +284,9 @@ const generate = async request => {
     const body = await res2.text()
     return JSON.parse(body)
   }
-  const randsk = await verifyPwd(surl_1,pwd)
+  if (!randsk) {
+    randsk = await verifyPwd(surl_1,pwd)
+  }
   const json2 = await getSign(surl_1,randsk)
   let filecontent = ``
   if(json2 != 1){
@@ -277,7 +294,15 @@ const generate = async request => {
     const timestamp = json2.timestamp
     const shareid = json2.shareid
     const uk = json2.uk 
-    const filejson = await getFileList(shareid,uk,randsk)
+    const filejson = await getFileList(shareid,uk,randsk,dir)
+    if (dir) {
+      const dirParts = dir.split('/')
+      filecontent += `<li class="list-group-item border-muted rounded text-muted py-2" style="margin-bottom: 10px">
+        <i class="far fa-folder-open mr-2"></i>
+        ${dirParts.map((e, i) => `<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${dirParts.slice(0, i + 1).join('/')}')">${e}/</a>`).join('')}
+        <span class="float-right"></span>
+      </li>`
+    }
     for(var i=0;i<filejson.list.length;i++){
       const file = filejson.list[i]
       if(file.isdir == 0){
@@ -290,7 +315,7 @@ filecontent += `<li class="list-group-item border-muted rounded text-muted py-2"
       else {
 filecontent += `<li class="list-group-item border-muted rounded text-muted py-2">
 <i class="far fa-folder mr-2"></i>
-<a href="javascript:void(0)" onclick="Swal.fire('Sorry~','暂不支持文件夹下载','error')">`+file.server_filename+`</a>
+<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${file.path}')">`+file.server_filename+`</a>
 <span class="float-right"></span>
 </li>`
       }
