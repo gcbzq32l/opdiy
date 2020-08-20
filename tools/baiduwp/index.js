@@ -209,27 +209,42 @@ const generate = async request => {
   const headers = { 'Content-Type': 'text/html;charset=UTF-8' }
   const surl_1 = surl.substring(1)
   async function verifyPwd(surl,pwd){
-    let formData1 = new FormData()
-    formData1.append('pwd',pwd)
-    const res = await fetch('https://pan.baidu.com/share/verify?channel=chunlei&clienttype=0&web=1&app_id=250528&surl='+surl_1,
-    {
-      body: formData1,
-      method: 'POST',
-      headers:{
-        'user-agent':'netdisk',
-        'Referer':'https://pan.baidu.com/disk/home'
-      }
-      }
-      )
-      const json1 = await res.json()
-      if(json1.errno == 0){
-        return json1.randsk
-      }
-      else {
+    if(pwd){
+      let formData1 = new FormData()
+      formData1.append('pwd',pwd)
+      const res = await fetch('https://pan.baidu.com/share/verify?channel=chunlei&clienttype=0&web=1&app_id=250528&surl='+surl_1,
+      {
+        body: formData1,
+        method: 'POST',
+        headers:{
+          'user-agent':'netdisk',
+          'Referer':'https://pan.baidu.com/disk/home'
+        }
+        }
+        )
+        const json1 = await res.json()
+        if(json1.errno == 0){
+          return json1.randsk
+        }
+        else {
+          return 1
+        }
+    }
+    else{
+      const res = await fetch('https://pan.baidu.com/s/1'+surl,{
+        redirect:"manual"
+      })
+      if(res.status == 302){
         return 1
+      }else{
+        if(res.headers.get('set-cookie').includes('BDCLND=')){
+          return cookie.match(/BDCLND\=(.+?)\;/)[1]
+        }
+        else{
+          return false
+        }
       }
-      
-      
+    }
   }
   async function getSign(surl,randsk){
     if(randsk == 1){
@@ -268,8 +283,16 @@ const generate = async request => {
     const body = await res2.text()
     return JSON.parse(body)
   }
+  async function checkPwd(pwd){
+  if(pwd != ""){
+     return await verifyPwd(surl_1,pwd)
+  }
+  else{
+    return await verifyPwd(surl_1)
+  }
+  }
   if (!randsk) {
-    randsk = await verifyPwd(surl_1,pwd)
+    randsk = await checkPwd(pwd)
   }
   const json2 = await getSign(surl_1,randsk)
   let filecontent = ``
