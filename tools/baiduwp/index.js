@@ -67,6 +67,91 @@ const error = `
 <div class="row justify-content-center">
 <div class="col-md-7 col-sm-8 col-11">`
 
+const previewHeader = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Ling Macker"/>
+<meta name="description" content="PanDownload网页版,百度网盘分享链接在线解析工具"/>
+<meta name="keywords" content="PanDownload,百度网盘,分享链接,下载,不限速"/>
+<link rel="icon" href="https://pandownload.com/favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/dplayer/1.26.0/DPlayer.min.js"></script>
+<style>
+  body {
+    background-image: url("https://pandownload.com/img/baiduwp/bg.png");
+  }
+
+  .logo-img {
+    width: 1.1em;
+    position: relative;
+    top: -3px;
+  }
+  #video{
+	max-width: 100%;
+  }
+</style>
+<meta name="referrer" content="never">
+<title>视频预览</title>
+<style>
+    .alert {
+      position: relative;
+      top: 3em;
+    }
+	.dplayer-logo {
+		pointer-events: none;
+		position: absolute;
+		left:auto;
+		right: 10px;
+		top: 10px;
+		max-width: 30px;
+		max-height: 30px;
+	}
+    .alert-heading {
+      height: 0.8em;
+    }
+  </style>
+<script>`
+
+const previewFooter = `</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<div class="container">
+<a class="navbar-brand" href="${INDEX_URL}">
+<img src="https://pandownload.com/img/baiduwp/logo.png" class="img-fluid rounded logo-img mr-2" alt="LOGO">PanDownload
+</a>
+<button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#collpase-bar">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="collpase-bar">
+<ul class="navbar-nav">
+<li class="nav-item">	
+<a class="nav-link" href="${INDEX_URL}">主页</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class="container-fluid" id="video">
+<div class="row justify-content-center">
+<div class="col-md-7 col-sm-8 col-11">
+<div class="alert alert-primary" role="alert">
+<h5 class="alert-heading">视频预览 with ❤ DPlayer</h5>
+<hr>
+<p class="card-text"><a href="./help">如无法播放请按照教程修改UA</a><br><div id="dplayer"></div></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>`
+
 const filebody = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -106,6 +191,42 @@ const filebody = `<!DOCTYPE html>
     form.append('<input type="hidden" name="uk" value="'+uk+'">');
     $(document.body).append(form);
     form.submit();
+  }
+  function video(fs_id, timestamp, sign, randsk, share_id, uk, filetype){
+    Swal.fire({
+      title: '请选择',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: '下载',
+      cancelButtonText: '预览'
+    }).then((result) => {
+      if (result.value) {
+        dl(fs_id, timestamp, sign, randsk, share_id, uk);
+      }
+      else if(result.dismiss === Swal.DismissReason.cancel){
+        let form = $('<form method="post" action="/preview" target="_blank"></form>');
+        form.append('<input type="hidden" name="fs_id" value="'+fs_id+'">');
+        form.append('<input type="hidden" name="time" value="'+timestamp+'">');
+        form.append('<input type="hidden" name="sign" value="'+sign+'">');
+        form.append('<input type="hidden" name="randsk" value="'+randsk+'">');
+        form.append('<input type="hidden" name="share_id" value="'+share_id+'">');
+        form.append('<input type="hidden" name="uk" value="'+uk+'">');
+        form.append('<input type="hidden" name="filetype" value="'+filetype+'">');
+        $(document.body).append(form);
+        form.submit();
+      }
+    })
+  }
+  function getFileType(filename){
+    var point = filename.lastIndexOf(".");
+    var t = filename.substr(point+1);
+    if (t == ""){
+      return "";
+    }
+    t = t.toLowerCase();
+    return t;
   }
   function getIconClass(filename){
     var filetype = {
@@ -154,6 +275,13 @@ const filebody = `<!DOCTYPE html>
   $(document).ready(function(){
     $(".fa-file").each(function(){
       var icon = getIconClass($(this).next().text());
+      var filetype = getFileType($(this).next().text())
+      var type = icon.substring(8);
+      if(type == 'video'||type == 'audio'){
+        const link = $(this).next().attr("onclick")
+        const postlink = link.substring(3,link.length-1)
+        $(this).next().attr("onclick","video("+postlink+",'"+filetype+"')")
+      }
       if (icon != "")
       {
         if (icon == "fa-windows" || icon == "fa-android" || icon == "fa-apple")
@@ -744,7 +872,86 @@ const dfooter = `
 </body>
 </html>`
 
-
+const getVideo = async request => {
+  const ua = request.headers.get('User-Agent')
+  let previewScript
+  const form2 = await request.formData()
+  const fs_id = form2.get('fs_id')
+  const timestamp = form2.get('time')
+  const sign = form2.get('sign')
+  const randsk = form2.get('randsk')
+  const share_id = form2.get('share_id')
+  const uk = form2.get('uk')
+  const filetype = form2.get('filetype')
+  async function getDlink(fs_id,timestamp,sign,randsk,share_id,uk){
+    var formData2 = new FormData()
+    formData2.append('encrypt',0)
+    formData2.append('extra','{"sekey":"'+decodeURIComponent(randsk)+'"}')
+    formData2.append('fid_list','['+fs_id+']')
+    formData2.append('primaryid',share_id)
+    formData2.append('uk',uk)
+    formData2.append('product','share')
+    formData2.append('type','nolimit')
+    const res3 = await fetch('https://pan.baidu.com/api/sharedownload?app_id=250528&channel=chunlei&clienttype=12&sign='+sign+'&timestamp='+timestamp+'&web=1',{
+      body:formData2,
+      headers:{
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.514.1919.810 Safari/537.36',
+        'Cookie':'BDUSS=' + BDUSS + ';'
+            +  'STOKEN=' + STOKEN + '; BDCLND=' + randsk
+      },
+      method:'POST'
+      }
+    )
+    return JSON.parse(await res3.text())
+  }
+  const json3 = await getDlink(fs_id,timestamp,sign,randsk,share_id,uk)
+  if(json3.errno == 0){
+  const dlink = json3.list[0].dlink
+  const getRealLink = await fetch(dlink,{
+    headers:{
+      'user-agent': ua,
+      'Cookie': 'BDUSS=' + SVIPBDUSS + ';'
+    },
+    redirect:"manual"
+  })
+  const dldata = JSON.parse(await getRealLink.text())
+  if(dldata.error_code == 302){
+    const realLink = getRealLink.headers.get('Location').substring(7)
+    previewScript = `$(function(){
+      const dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        video: {
+            url: 'https://`+realLink+`',
+       },
+    logo: 'https://pandownload.com/img/baiduwp/logo.png',
+    })
+    })`
+  }
+  else{
+    previewScript = `$(function(){
+      const dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        video: {
+            url: 'failed',
+       },
+    logo: 'https://pandownload.com/img/baiduwp/logo.png',
+    })
+    })`
+  }
+}
+else{
+  previewScript = `$(function(){
+    const dp = new DPlayer({
+      container: document.getElementById('dplayer'),
+      video: {
+          url: 'failed',
+     },
+  logo: 'https://pandownload.com/img/baiduwp/logo.png',
+  })
+  })`
+}
+  return new Response(previewHeader+previewScript+previewFooter, { headers: {'Content-Type': 'text/html;charset=UTF-8'} })
+}
 
 const download = async request => {
   const form2 = await request.formData()
@@ -824,6 +1031,9 @@ async function handleRequest(request) {
   if (request.method === 'POST') {
     if(url.includes('download')){
       response = await download(request)
+    }
+    else if(url.includes('preview')){
+      response = await getVideo(request)
     }
     else{
       response = await generate(request)
