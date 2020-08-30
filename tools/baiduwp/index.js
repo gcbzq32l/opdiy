@@ -2,6 +2,8 @@ const BDUSS = '' //**INPUT YOUR BDUSS HERE**
 const STOKEN = '' //**INPUT YOUR STOKEN HERE**
 const SVIPBDUSS = '' //**INPUT YOUR SVIP BDUSS HERE**
 const INDEX_URL = '' // Input your index url here
+const AUTH_USER = '' //**INPUT BASIC AUTH USERNAME (optional)**
+const AUTH_PASS = '' //**INPUT BASIC AUTH SUPER SECRET PASSWORD (optional)**
 
 const error = `
 <!DOCTYPE html>
@@ -1025,9 +1027,33 @@ const download = async request => {
 
   return new Response(dbody+dresult+dfooter, { headers: {'Content-Type': 'text/html;charset=UTF-8'} })
 }
+function parseAuthHeader(str) {
+  if (!str) {
+    return null
+  }
+
+  try {
+    const token = (str.match(/^\s*BASIC\s+(.+)\s*$/i) || [])[1]
+    const [, user, pass] = atob(token).match(/^([^:]*):(.*)$/)
+    return { user, pass }
+  } catch (error) {
+    return null
+  }
+}
 async function handleRequest(request) {
   let response
-  const { url } = request
+  const { url, headers } = request
+  if (AUTH_USER || AUTH_PASS) {
+    const credentials = parseAuthHeader(headers.get('Authorization'))
+    if (!credentials || credentials.user !== AUTH_USER || credentials.pass !== AUTH_PASS) {
+      return new Response('Unauthorized', {
+        status: 401,
+        headers: {
+          'WWW-Authenticate': 'Basic realm="Not Authorized", charset="UTF-8"'
+        }
+      })
+    }
+  }
   if (request.method === 'POST') {
     if(url.includes('download')){
       response = await download(request)
