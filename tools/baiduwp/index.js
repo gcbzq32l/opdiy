@@ -527,7 +527,7 @@ const filebody = `<!DOCTYPE html>
     }
     return "";
   }
-  function goToDir(surl, pwd, randsk, dir) {
+  function goToDir(surl, pwd, randsk, shareid, uk, dir) {
     var $form = $('<form>').attr('method', 'POST');
     var appendFormItem = function(key, value) {
       $form.append($('<input>').attr('type', 'hidden').attr('name', key).attr('value', value));
@@ -536,6 +536,8 @@ const filebody = `<!DOCTYPE html>
     appendFormItem('surl', surl);
     appendFormItem('pwd', pwd);
     appendFormItem('randsk', randsk);
+    appendFormItem('shareid', shareid);
+    appendFormItem('uk', uk);
     appendFormItem('dir', dir);
 
     $form.appendTo($('body')).submit();
@@ -601,6 +603,8 @@ const generate = async request => {
   const surl = text.get('surl')
   const pwd = text.get('pwd')
   const dir = text.get('dir')
+  const uk = text.get('uk') || ''
+  const shareid = text.get('shareid') || ''
   let randsk = text.get('randsk')
   const headers = { 'Content-Type': 'text/html;charset=UTF-8' }
   const surl_1 = surl.substring(1)
@@ -608,7 +612,7 @@ const generate = async request => {
     if(pwd){
       let formData1 = new FormData()
       formData1.append('pwd',pwd)
-      const res = await fetch('https://pan.baidu.com/share/verify?channel=chunlei&clienttype=0&web=1&app_id=250528&surl='+surl_1,
+      const res = await fetch(`https://pan.baidu.com/share/verify?channel=chunlei&clienttype=0&web=1&app_id=250528&${surl_1 ? `surl=${surl_1}` : `uk=${uk}&shareid=${shareid}`}`,
       {
         body: formData1,
         method: 'POST',
@@ -627,7 +631,7 @@ const generate = async request => {
         }
     }
     else{
-      const res = await fetch('https://pan.baidu.com/s/1'+surl,{
+      const res = await fetch(surl ? 'https://pan.baidu.com/s/1' + surl : `https://pan.baidu.com/share/link?uk=${uk}&shareid=${shareid}`,{
         redirect:"manual"
       })
       if(res.status == 302){
@@ -647,7 +651,7 @@ const generate = async request => {
     if(randsk == 1){
       return 1
     }
-    const res1 = await fetch('https://pan.baidu.com/s/1'+surl,
+    const res1 = await fetch(surl ? 'https://pan.baidu.com/s/1' + surl : `https://pan.baidu.com/share/link?uk=${uk}&shareid=${shareid}`,
     {
       method:'GET',
       headers:{
@@ -703,7 +707,7 @@ const generate = async request => {
       const dirParts = dir.split('/')
       filecontent += `<li class="list-group-item border-muted rounded text-muted py-2" style="margin-bottom: 10px">
         <i class="far fa-folder-open mr-2"></i>
-        ${dirParts.map((e, i) => `<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${dirParts.slice(0, i + 1).join('/')}')">${e}/</a>`).join('')}
+        ${dirParts.map((e, i) => `<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${shareid}', '${uk}', '${dirParts.slice(0, i + 1).join('/')}')">${e}/</a>`).join('')}
         <span class="float-right"></span>
       </li>`
     }
@@ -719,7 +723,7 @@ filecontent += `<li class="list-group-item border-muted rounded text-muted py-2"
       else {
 filecontent += `<li class="list-group-item border-muted rounded text-muted py-2">
 <i class="far fa-folder mr-2"></i>
-<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${file.path}')">`+file.server_filename+`</a>
+<a href="javascript:void(0)" onclick="goToDir('${surl}', '${pwd}', '${randsk}', '${shareid}', '${uk}', '${file.path}')">`+file.server_filename+`</a>
 <span class="float-right"></span>
 </li>`
       }
@@ -798,8 +802,8 @@ if (link == null || link == "") {
 document.forms["form1"]["surl"].focus();
 return false;
 }
-var uk = link.match(/uk=(\d+)/);
-var shareid = link.match(/shareid=(\d+)/);
+var uk = link.match(/uk=(\\d+)/);
+var shareid = link.match(/shareid=(\\d+)/);
 if (uk != null && shareid != null) {
 document.forms["form1"]["surl"].value = "";
 $("form").append('<input type="hidden" name="uk" value="' + uk[1] + '">');
