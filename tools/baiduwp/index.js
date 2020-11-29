@@ -849,6 +849,14 @@ const generate = async request => {
     const shareid = json2.shareid
     const uk = json2.uk 
     const filejson = await getFileList(shareid,uk,randsk,dir)
+    if (filejson.errno) {
+      return new Response(error + `
+          <div class="alert alert-danger" role="alert">
+      <h5 class="alert-heading">提示</h5>
+      <hr>
+      <p class="card-text">${filejson.show_msg || '提取码错误或文件失效'}</p>
+      </div>` + error_div, { headers })
+    }
     if (dir) {
       const dirParts = dir.split('/')
       filecontent += `<li class="list-group-item border-muted rounded text-muted py-2" style="margin-bottom: 10px">
