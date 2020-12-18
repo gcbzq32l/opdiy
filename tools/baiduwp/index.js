@@ -1367,10 +1367,10 @@ const dlRapid = async request => {
     'Cookie':'BDUSS=' + SVIPBDUSS + '; '
     +  'STOKEN=' + SVIPSTOKEN + ';'
   }
-  const getbdstoken = await fetch('https://pan.baidu.com/disk/home',{
+  const getbdstoken = await fetch('https://pan.baidu.com/api/gettemplatevariable?fields=[%22bdstoken%22]',{
     headers:header
   })
-  const re = /locals\.set\(\'bdstoken\'\, \'([A-Za-z0-9]{32})/
+  const re = /\"([A-Za-z0-9]{32})/
   let bdstoken
   try{
     bdstoken = (await getbdstoken.text()).match(re)[1]
@@ -1399,7 +1399,7 @@ const dlRapid = async request => {
     const path = fjson['info']['path']
     const timestamp = Math.round(new Date().getTime() / 1000)
     const postData = 'app_id=250528&check_blue=1&es=1&esl=1&ver=2&dtype=1&err_ver=1.0&ehps=0&channel=00000000000000000000000000000000&vip=2&path='+encodeURIComponent(path)+
-    '&time='+ timestamp + '&devuid=O|00000000000000000000000000000000&clienttype=20' // TODO: add rand to get high speed link (decompile UWP/Android/PC client)
+    '&time='+ timestamp + '&devuid=O|00000000000000000000000000000000&clienttype=20'
     const getRealLink = await fetch('https://d.pcs.baidu.com/rest/2.0/pcs/file?method=locatedownload',{
       headers:{
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -1411,7 +1411,7 @@ const dlRapid = async request => {
     })
     const dldata = JSON.parse(await getRealLink.text())
     if(getRealLink.status == 200){
-      realLink = dldata['urls'][0]['url'].replace(/http[s]*:\/\//,'') // TODO: replace a parameter to bypass thread limit
+      realLink = dldata['urls'][0]['url'].replace(/http[s]*:\/\//,'')
     dresult = `<div class="alert alert-primary" role="alert">
       <h5 class="alert-heading" id="alert">获取下载链接成功</h5>
       <hr>
