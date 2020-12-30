@@ -1106,13 +1106,13 @@ const helptext = `
 <h4>ADM Pro（Android推荐）</h4>
 <ol>
 <li>设置 –&gt; 下载中 –&gt; 浏览器标识 –&gt; 自定义 浏览器标识</li>
-<li>填入： LogStatistic</li>
+<li>填入： netdisk;11.4.5.14</li>
 <li>切换到浏览器，长按“下载链接”，选择复制链接地址</li>
 <li>在ADM中添加任务并开始</li>
 </ol>
 <h4>IDM</h4>
 <ol>
-<li>选项 -> 下载 -> 手动添加任务时使用的用户代理（UA）-> 填入 <b>LogStatistic</b></li>
+<li>选项 -> 下载 -> 手动添加任务时使用的用户代理（UA）-> 填入 <b>netdisk;11.4.5.14</b></li>
 <li>右键复制下载链接，在 IDM 新建任务，粘贴链接即可下载。</li>
 </ol>
 <h4>Chrome浏览器</h4>
@@ -1120,7 +1120,7 @@ const helptext = `
 <li>安装浏览器扩展程序 <a href="https://chrome.google.com/webstore/detail/user-agent-switcher-for-c/djflhoibgkdhkhhcedjiklpkjnoahfmg" target="_blank">User-Agent Switcher for Chrome</a></li>
 <li>右键点击扩展图标 -> 选项</li>
 <li>New User-agent name 填入 百度网盘分享下载</li>
-<li>New User-Agent String 填入 LogStatistic</li>
+<li>New User-Agent String 填入 netdisk;11.4.5.14</li>
 <li>Group 填入 百度网盘</li>
 <li>Append? 选择 Replace</li>
 <li>Indicator Flag 填入 Log，点击 Add 保存</li>
@@ -1133,11 +1133,11 @@ const helptext = `
 <h4>Pure浏览器（Android）</h4>
 <ol>
 <li>设置 –&gt; 浏览设置 -&gt; 浏览器标识(UA)</li>
-<li>添加自定义UA：LogStatistic</li>
+<li>添加自定义UA：netdisk;11.4.5.14</li>
 </ol>
 <h4>Alook浏览器（IOS）</h4>
 <ol>
-<li>设置 -&gt; 通用设置 -&gt; 浏览器标识 -&gt; 移动版浏览器标识 -&gt; 自定义 -><br> 填入 <b>LogStatistic</b></li>
+<li>设置 -&gt; 通用设置 -&gt; 浏览器标识 -&gt; 移动版浏览器标识 -&gt; 自定义 -><br> 填入 <b>netdisk;11.4.5.14</b></li>
 </ol>
 </section>
 </div>
@@ -1223,7 +1223,7 @@ let aria2url = $('#url').val()
 // Thanks to acgotaku/BaiduExporter
 const httpurl = $('#http')[0].href
 const httpsurl = $('#https')[0].href
-const headerOption = ['User-Agent: LogStatistic']
+const headerOption = ['User-Agent: netdisk;11.4.5.14']
 let post
 let postVer
 if(token != ""){
@@ -1367,7 +1367,7 @@ const dlRapid = async request => {
     'Cookie':'BDUSS=' + SVIPBDUSS + '; '
     +  'STOKEN=' + SVIPSTOKEN + ';'
   }
-  const getbdstoken = await fetch('https://pan.baidu.com/api/gettemplatevariable?fields=[%22bdstoken%22]',{
+  const getbdstoken = await fetch('http://pan.baidu.com/api/gettemplatevariable?fields=[%22bdstoken%22]',{
     headers:header
   })
   const re = /\"([A-Za-z0-9]{32})/
@@ -1389,7 +1389,7 @@ const dlRapid = async request => {
   formData.append('path','/baiduwp/'+new Date().getTime()+'/'+filename)
   formData.append('content-length',flength)
 
-  const saveFile = await fetch('https://pan.baidu.com/api/rapidupload?app_id=250528&bdstoken='+bdstoken+'&channel=chunlei&clienttype=0&rtype=1&web=1',{
+  const saveFile = await fetch('http://pan.baidu.com/api/rapidupload?app_id=250528&bdstoken='+bdstoken+'&channel=chunlei&clienttype=0&rtype=1&web=1',{
     headers:header,
     method:'POST',
     body:formData
@@ -1398,32 +1398,44 @@ const dlRapid = async request => {
   if(fjson['errno'] === 0){
     const path = fjson['info']['path']
     const timestamp = Math.round(new Date().getTime() / 1000)
-    const postData = 'app_id=250528&check_blue=1&es=1&esl=1&ver=2&dtype=1&err_ver=1.0&ehps=0&channel=00000000000000000000000000000000&vip=2&path='+encodeURIComponent(path)+
-    '&time='+ timestamp + '&devuid=O|00000000000000000000000000000000&clienttype=20'
-    const getRealLink = await fetch('https://d.pcs.baidu.com/rest/2.0/pcs/file?method=locatedownload',{
+    const getRealLink = await fetch('http://d.pcs.baidu.com/rest/2.0/pcs/file?method=locatedownload&app_id=250528&path='+encodeURIComponent(path)+'&to=114514',{
       headers:{
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        'user-agent': 'LogStatistic',
+        'user-agent': 'netdisk;11.4.5.14',
         'Cookie': 'BDUSS=' + SVIPBDUSS + ';'
       },
-      method:'POST',
-      body: postData
+      method: 'GET'
     })
     const dldata = JSON.parse(await getRealLink.text())
     if(getRealLink.status == 200){
-      realLink = dldata['urls'][0]['url'].replace(/http[s]*:\/\//,'')
+      const realLink = 'qdall01.baidupcs.com' + dldata['path']
+        const getTrueLink = await fetch('http://'+realLink,{
+          headers:{
+            'user-agent': 'netdisk;11.4.5.14'
+          },
+          redirect:"manual" 
+        })
+        if(getTrueLink.status == 302){
+        const trueLink = getTrueLink.headers.get('Location').substring(7)
     dresult = `<div class="alert alert-primary" role="alert">
       <h5 class="alert-heading" id="alert">获取下载链接成功</h5>
       <hr>
-      <p class="card-text" id="text">推荐使用aria2c 线程数64<br>
-      <a id="http" style="display:none;" href="http://`+realLink+`" target=_blank>下载链接(http)</a>
-      <a id="https" href="https://`+realLink+`" target=_blank>下载链接(https)</a>
+      <p class="card-text" id="text">推荐使用aria2c/Motrix<br>
+      <a id="http" href="https://`+trueLink+`" target=_blank>下载链接(推荐)</a>
+      <a id="https" href="https://`+realLink+`" target=_blank>下载链接(备用)</a>
       <br><br>
       <a href=javascript:void(0) id="aria2" data-toggle="modal" data-target="#exampleModal">推送到Aria2</a>
       <br><br>
       <a href="./help" id="help">下载链接使用方法（必读）</a></p>
       </div>`
     }
+    else{
+      dresult = `<div class="alert alert-danger" role="alert">
+      <h5 class="alert-heading">获取下载链接失败</h5>
+      <hr>
+      <p class="card-text">Get Real link Failed</p>
+      </div>`
+    }
+  }
     else{
       dresult = `<div class="alert alert-danger" role="alert">
       <h5 class="alert-heading">获取下载链接失败</h5>
@@ -1559,7 +1571,7 @@ const download = async request => {
   const dlink = json3.list[0].dlink
   const getRealLink = await fetch(dlink,{
     headers:{
-      'user-agent': 'LogStatistic',
+      'user-agent': 'netdisk;11.4.5.14',
       'Cookie': 'BDUSS=' + SVIPBDUSS + ';'
     },
     redirect:"manual"
