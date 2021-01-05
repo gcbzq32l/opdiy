@@ -149,6 +149,7 @@ height: 3em;
 </style>
 <link href="https://cdn.staticfile.org/font-awesome/5.8.1/css/all.min.css" rel="stylesheet">
 <script>
+  function formatBytes(a,b=2){if(0===a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d]}
   function atou(str) {
     return decodeURIComponent(escape(window.atob(str)));
   }
@@ -164,6 +165,7 @@ height: 3em;
     $(document.body).append(form);
     form.submit();
   }
+  
   function getFileType(filename){
     var point = filename.lastIndexOf(".");
     var t = filename.substr(point+1);
@@ -306,7 +308,7 @@ height: 3em;
       return \`<li class="list-group-item border-muted rounded text-muted py-2">
 <i class="far fa-file mr-2"></i>
 <a href="javascript:void(0)" onclick="dl('\${md5}','\${slicemd5}','\${flength}','\${name}')">\${name}</a>
-<span class="float-right">\${flength}</span></li>\`
+<span class="float-right">\${formatBytes(flength)}</span></li>\`
     }
     for(const f in file){
       if(file[f].length > 1){
@@ -871,7 +873,7 @@ const generate = async request => {
 filecontent += `<li class="list-group-item border-muted rounded text-muted py-2">
 <i class="far fa-file mr-2"></i>
 <a href="javascript:void(0)" onclick="dl('`+ file.fs_id + `',`+ timestamp +`,'`+ sign +`','` + randsk + `','`+shareid+`','`+ uk +`')">`+file.server_filename+`</a>
-<span class="float-right">`+ file.size +`</span>
+<span class="float-right">`+ formatBytes(file.size) +`</span>
 </li>`
       }
       else {
@@ -1608,6 +1610,8 @@ const download = async request => {
 
   return new Response(dbody+dresult+dfooter, { headers: {'Content-Type': 'text/html;charset=UTF-8'} })
 }
+// https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+function formatBytes(a,b=2){if(0===a)return"0 Bytes";const c=0>b?0:b,d=Math.floor(Math.log(a)/Math.log(1024));return parseFloat((a/Math.pow(1024,d)).toFixed(c))+" "+["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"][d]}
 function parseAuthHeader(str) {
   if (!str) {
     return null
