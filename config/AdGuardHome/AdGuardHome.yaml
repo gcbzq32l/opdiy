@@ -22,7 +22,7 @@ dns:
   blocking_mode: null_ip
   blocking_ipv4: ""
   blocking_ipv6: ""
-  blocked_response_ttl: 60
+  blocked_response_ttl: 300
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   ratelimit: 0
@@ -71807,49 +71807,45 @@ tls:
   private_key_path: ""
 filters:
 - enabled: false
-  url: https://files.huayu.workers.dev/adg.txt
+  url: https://files.huayu.workers.dev/0:/adg.txt
   name: My
   id: 001
 - enabled: true
   url: https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt
   name: AdGuard Simplified Domain Names filter
-  id: 1
+  id: 100
 - enabled: true
   url: https://adaway.org/hosts.txt
   name: AdAway
-  id: 2
-- enabled: true
-  url: http://www.malwaredomainlist.com/hostslist/hosts.txt
-  name: MalwareDomainList.com Hosts List
-  id: 3
+  id: 200
 - enabled: true
   url: https://easylist-downloads.adblockplus.org/antiadblockfilters.txt
   name: Adblock Warning Removal List
-  id: 4
+  id: 300
 - enabled: true
   url: https://fanboy.co.nz/fanboy-problematic-sites.txt
   name: Fanboy's problematic-sites
-  id: 5
+  id: 400
 - enabled: true
   url: https://raw.githubusercontent.com/xinggsf/Adblock-Plus-Rule/master/ABP-FX.txt
   name: ABP-FX
-  id: 6
+  id: 500
 - enabled: true
   url: https://raw.githubusercontent.com/adbyby/xwhyc-rules/master/lazy.txt
   name: lazy.txt
-  id: 7
+  id: 600
 - enabled: true
   url: https://raw.githubusercontent.com/vokins/yhosts/master/hosts
   name: yhosts
-  id: 8
+  id: 700
 - enabled: true
   url: http://sub.adtchrome.com/adt-chinalist-easylist.txt
   name: ChinaList+EasyList(修正)
-  id: 9
+  id: 800
 - enabled: false
   url: https://raw.githubusercontent.com/missdeer/blocklist/master/toblock-without-shorturl.lst
   name: toblock-without-shorturl
-  id: 10
+  id: 900
 whitelist_filters: []
 user_rules:
 - ""
@@ -71861,7 +71857,7 @@ dhcp:
   range_start: ""
   range_end: ""
   lease_duration: 86400
-  icmp_timeout_msec: 3000
+  icmp_timeout_msec: 1000
 clients: []
 log_file: ""
 verbose: false
