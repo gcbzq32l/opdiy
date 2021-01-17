@@ -1400,7 +1400,7 @@ const dlRapid = async request => {
   if(fjson['errno'] === 0){
     const path = fjson['info']['path']
     const timestamp = Math.round(new Date().getTime() / 1000)
-    const getRealLink = await fetch('http://d.pcs.baidu.com/rest/2.0/pcs/file?method=locatedownload&app_id=250528&path='+encodeURIComponent(path)+'&to=114514',{
+    const getRealLink = await fetch('http://d.pcs.baidu.com/rest/2.0/pcs/file?method=locatedownload&app_id=250528&path='+encodeURIComponent(path),{
       headers:{
         'user-agent': 'netdisk;11.4.5.14',
         'Cookie': 'BDUSS=' + SVIPBDUSS + ';'
