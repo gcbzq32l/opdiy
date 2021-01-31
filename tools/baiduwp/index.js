@@ -1222,6 +1222,7 @@ else{
 async function addUri(){
 let token = $('#token').val()
 let aria2url = $('#url').val()
+let filename = $('#filename').text()
 // Thanks to acgotaku/BaiduExporter
 const httpurl = $('#http')[0].href
 const httpsurl = $('#https')[0].href
@@ -1235,7 +1236,7 @@ postVer = JSON.stringify({
 		  id: 'baiduwp',
 		  params: ['token:'+token]
 		})
-post = JSON.stringify({jsonrpc:'2.0',id:'baiduwp',method:'aria2.addUri',params:["token:"+token,[httpurl,httpsurl],{header:headerOption}]})
+post = JSON.stringify({jsonrpc:'2.0',id:'baiduwp',method:'aria2.addUri',params:["token:"+token,[httpurl,httpsurl],{header:headerOption,out:filename}]})
 }
 else{
 postVer = JSON.stringify({	
@@ -1244,7 +1245,7 @@ postVer = JSON.stringify({
 		  id: 'baiduwp',
 		  params: []
 		})
-post = JSON.stringify({jsonrpc:'2.0',id:'baiduwp',method:'aria2.addUri',params:[[httpurl,httpsurl],{header:headerOption}]})
+post = JSON.stringify({jsonrpc:'2.0',id:'baiduwp',method:'aria2.addUri',params:[[httpurl,httpsurl],{header:headerOption,out:filename}]})
 }
 
 
@@ -1421,6 +1422,7 @@ const dlRapid = async request => {
     dresult = `<div class="alert alert-primary" role="alert">
       <h5 class="alert-heading" id="alert">获取下载链接成功</h5>
       <hr>
+      文件名：<b id="filename">${filename}</b>
       <p class="card-text" id="text">推荐使用aria2c/Motrix<br>
       <a id="http" href="https://`+trueLink+`" target=_blank>下载链接(推荐)</a>
       <a id="https" href="https://`+realLink+`" target=_blank>下载链接(备用)</a>
@@ -1571,6 +1573,7 @@ const download = async request => {
   let dresult
   if(json3.errno == 0){
   const dlink = json3.list[0].dlink
+  const filename = json3.list[0]['server_filename']
   const getRealLink = await fetch(dlink,{
     headers:{
       'user-agent': 'netdisk;11.4.5.14',
@@ -1584,6 +1587,7 @@ const download = async request => {
   dresult = `<div class="alert alert-primary" role="alert">
     <h5 class="alert-heading">获取下载链接成功</h5>
     <hr>
+    文件名：<b id="filename">${filename}</b>
     <p class="card-text"><a id="http" href="http://`+realLink+`" target=_blank>下载链接(http)</a>
     <a id="https" href="https://`+realLink+`" target=_blank>下载链接(https)</a>
     <br><br>
