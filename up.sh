@@ -1,6 +1,7 @@
 mkdir -p diy
 #Lean
 svn co --force -q https://github.com/coolsnowwolf/lede/trunk/package/lean ../lean && svn revert -R ../lean && rm -rf ../lean/.svn && rm -rf ../lean/samba4 && rm -rf ../lean/luci-app-samba4 && rm -rf ../lean/luci-app-ttyd && rm -rf ../lean/luci-theme-argon && rm -rf ../lean/luci-app-rclone && rm -rf ../lean/rclone && rm -rf ../lean/rclone-webui-react && rm -rf lean && mv ../lean ./ && echo "Lean更新成功" || echo "Lean暂无更新"
+svn co --force -q https://github.com/coolsnowwolf/lede/trunk/package/libs ../leanlibs && svn revert -R ../leanlibs && rm -rf ../leanlibs/.svn && [ -e ../leanlibs/libdouble-conversion/Makefile ] && rm -rf diy/libdouble-conversion && mv ../leanlibs/libdouble-conversion diy && echo "libdouble-conversion更新成功" || echo "libdouble-conversion暂无更新"
 #helloworld
 git clone -b master --depth 1 https://github.com/fw876/helloworld.git ../helloworld && [ -e ../helloworld/luci-app-ssr-plus/Makefile ] && rm -rf ../helloworld/.git && rm -rf diy/helloworld && mv ../helloworld diy && echo "helloworld更新成功" || echo "helloworld暂无更新"
 #OpenClash
