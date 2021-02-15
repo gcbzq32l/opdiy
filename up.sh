@@ -8,6 +8,7 @@ git clone -b master --depth 1 https://github.com/vernesong/OpenClash.git ../Open
 #chinadns-ng
 git clone -b master --depth 1 https://github.com/pexcn/openwrt-chinadns-ng.git ../chinadns-ng && [ -e ../chinadns-ng/Makefile ] && rm -rf ../chinadns-ng/.git && rm -rf diy/chinadns-ng && cp -a ../chinadns-ng diy && echo "chinadns-ng更新成功" || echo "chinadns-ng暂无更新"
 #CTCGFW
+git clone -b master --depth 1 https://github.com/immortalwrt/packages.git ../immortalwrt && [ -e ../immortalwrt/net/adguardhome/Makefile ] && mkdir -p diy/ctcgfw && rm -rf ../immortalwrt/.git && rm -rf diy/ctcgfw/adguardhome && mv ../immortalwrt/net/adguardhome diy/ctcgfw && echo "adguardhome更新成功" || echo "adguardhome暂无更新"
 svn co --force -q https://github.com/immortalwrt/immortalwrt/trunk/package/ctcgfw ../ctcgfw && svn revert -R ../ctcgfw && rm -rf ../ctcgfw/.svn && mkdir -p diy/ctcgfw && \
 [ -e ../ctcgfw/luci-app-adguardhome/Makefile ] && rm -rf diy/ctcgfw/luci-app-adguardhome && mv ../ctcgfw/luci-app-adguardhome diy/ctcgfw && echo "luci-app-adguardhome更新成功" || echo "luci-app-adguardhome暂无更新"
 [ -e ../ctcgfw/gost/Makefile ] && rm -rf diy/ctcgfw/gost && mv ../ctcgfw/gost diy/ctcgfw && echo "gost更新成功" || echo "gost暂无更新"
